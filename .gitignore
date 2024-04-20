@@ -1,6 +1,8 @@
 LightningTS/__pycache__
 LightningTS/data/__pycache__
 LightningTS/models/__pycache__
+LightningTS/models/PatchTST/__pycache__
+LightningTS/models/Autoformer/__pycache__
 LightningTS/utils/__pycache__
 LightningTS.egg-info/
 build/
