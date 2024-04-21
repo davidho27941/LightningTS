@@ -35,13 +35,17 @@ class StructureDataset(BaseDataset):
         self.stage = stage
         self.kwargs = kwargs
 
+        self.sequence_length = self.time_series_config["sequence_length"]
+        self.label_length = self.time_series_config["label_length"]
+        self.predict_length = self.time_series_config["predict_length"]
+
         self.__prepare__()
 
     def __prepare__data__(self, stage): ...
 
     def __prepare__transformer__(self) -> None:
 
-        param_path = self.config["data"]["preprocessing"]["normalize_param"]
+        param_path = self.preprocess_config["normalize_param"]
 
         if os.path.isfile(param_path):
             self.is_transform_fitted = True
@@ -51,7 +55,7 @@ class StructureDataset(BaseDataset):
             self.config_transformer()
 
     def __apply_transform__(self, data: pd.DataFrame) -> np.ndarray:
-        if self.config["data"]["preprocessing"]["normalize_method"] is not None:
+        if self.preprocess_config["normalize_method"] is not None:
             self.__prepare__transformer__()
 
             if self.is_transform_fitted:
@@ -106,5 +110,5 @@ class StructureDataset(BaseDataset):
         self.posix_ts = posix_ts
 
     def __len__(self) -> int:
-        
+
         return len(self.input) - self.sequence_length - self.predict_length + 1
