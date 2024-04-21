@@ -42,7 +42,10 @@ class StructureDataset(BaseDataset):
 
         self.__prepare__()
 
-    def __prepare__data__(self, stage): ...
+    def __prepare__data__(self, stage):
+        raise NotImplementedError(
+            "A child class must implement this method to load the data w.r.t to different stage."
+        )
 
     def __prepare__transformer__(self) -> None:
 
