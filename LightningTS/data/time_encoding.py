@@ -6,16 +6,20 @@ from typing import List
 from pandas.tseries import offsets
 from pandas.tseries.frequencies import to_offset
 
+from deprecated import deprecated
+
 
 class TimeEncoding:
     """A class contains several static method. These methods can help
     in loading/encoding datasets.
     """
 
+    @deprecated
     @staticmethod
     def get_data_dir(dataset_name):
         data_info = {}
 
+    @deprecated
     @staticmethod
     def load_dataset(
         dataset_name: str,
