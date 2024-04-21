@@ -31,6 +31,14 @@ class BaseDataset(Dataset, ABC):
         self.data = data
         self.config = config
 
+        self.freq = self.data_config["preprocessing"]["freq"]
+        self.features = self.config["data"]["features"]
+        self.targets = self.targets["data"]["targets"]
+
+        self.column_name = [*self.features, *self.targets]
+
+        self.time_encoding = self.config["data"]["preprocessing"]["time_encoding"]
+
     def config_transformer(self):
         preprocessing_method = self.config["data"]["preprocessing"]["normalize_method"]
         match preprocessing_method:
