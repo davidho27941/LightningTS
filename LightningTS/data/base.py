@@ -1,3 +1,5 @@
+import os
+
 from typing import Any, Callable
 
 from torch.utils.data import Dataset
@@ -96,8 +98,8 @@ class BaseDataset(Dataset, ABC):
 
         save_path = (
             f"{log_dir}/{model_name}/{model_version}/transformer_param.pkl"
-            if self.preprocess_config["normalize_param"] is None
-            else self.preprocess_config["normalize_param"]
+            if self.preprocess_config["normalize_param"] == "None"
+            else os.path.join(*self.preprocess_config["normalize_param"])
         )
 
         dump(self._transformer, save_path)
