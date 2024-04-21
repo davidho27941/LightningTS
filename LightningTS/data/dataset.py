@@ -104,3 +104,7 @@ class StructureDataset(BaseDataset):
         self.label = data_processed
 
         self.posix_ts = posix_ts
+
+    def __len__(self) -> int:
+        
+        return len(self.input) - self.sequence_length - self.predict_length + 1
