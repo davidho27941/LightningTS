@@ -14,6 +14,8 @@ from sklearn.preprocessing import (
 
 from joblib import dump, load
 
+model_need_label = ["Autoformer"]
+
 
 class BaseDataIO(ABC):
     def __init__(self, file_path) -> None:
@@ -42,6 +44,12 @@ class BaseDataset(Dataset, ABC):
         self.column_name = [*self.features, *self.targets]
 
         self.time_encoding = self.preprocess_config["time_encoding"]
+
+        self.need_label = (
+            True
+            if self.config["model"]["model_architecture"] in model_need_label
+            else False
+        )
 
     def config_transformer(self):
         preprocessing_method = self.preprocess_config["normalize_method"]
