@@ -112,3 +112,7 @@ class StructureDataset(BaseDataset):
     def __len__(self) -> int:
 
         return len(self.input) - self.sequence_length - self.predict_length + 1
+
+    def __getitem__(self, index) -> Any:
+        input_begin = index
+        input_end = index + self.input_length
