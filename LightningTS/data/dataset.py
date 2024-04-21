@@ -1,4 +1,5 @@
 import os
+import torch
 
 import numpy as np
 import pandas as pd
@@ -116,3 +117,28 @@ class StructureDataset(BaseDataset):
     def __getitem__(self, index) -> Any:
         input_begin = index
         input_end = index + self.input_length
+
+        sqeuence_input = torch.FloatTensor(self.input[input_begin:input_end])
+        sqeuence_input_mask = torch.FloatTensor(self.timestamp[input_begin:input_end])
+
+        if self.need_label:
+            label_begin = input_end - self.label_length
+            label_end = label_begin + self.label_length + self.output_length
+
+            sqeuence_label = torch.FloatTensor(self.input[label_begin:label_end])
+            sqeuence_label_mask = torch.FloatTensor(
+                self.timestamp[label_begin:label_end]
+            )
+        else:
+            sqeuence_label = torch.zeros(self.label_length)
+            sqeuence_label_mask = torch.zeros(self.label_length)
+
+        posix_ts = torch.LongTensor([self.posix_ts[index]])
+
+        return (
+            sqeuence_input,
+            sqeuence_label,
+            sqeuence_input_mask,
+            sqeuence_label_mask,
+            posix_ts,
+        )
