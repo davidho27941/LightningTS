@@ -110,8 +110,8 @@ class BaseDataset(Dataset, ABC):
 
         save_path = (
             f"{log_dir}/{model_name}/{model_version}/transformer_param.pkl"
-            if self.preprocess_config["normalize_param"] == "None"
-            else os.path.join(*self.preprocess_config["normalize_param"])
+            if self.param_path is None
+            else self.param_path
         )
 
         dump(self._transformer, save_path)
