@@ -14,12 +14,12 @@ class TimeEncoding:
     in loading/encoding datasets.
     """
 
-    @deprecated
+    @deprecated(version="0.1.0")
     @staticmethod
     def get_data_dir(dataset_name):
         data_info = {}
 
-    @deprecated
+    @deprecated(version="0.1.0")
     @staticmethod
     def load_dataset(
         dataset_name: str,
