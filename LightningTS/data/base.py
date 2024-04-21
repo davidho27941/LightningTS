@@ -33,6 +33,7 @@ class BaseDataset(Dataset, ABC):
 
         self.data_config = config["data"]
         self.preprocess_config = config["data"]["preprocess"]
+        self.time_series_config = config["data"]["series_config"]
 
         self.freq = self.preprocess_config["freq"]
         self.features = self.data_config["features"]
