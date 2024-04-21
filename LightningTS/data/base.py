@@ -79,9 +79,14 @@ class BaseDataset(Dataset, ABC):
     def transformer(self) -> Callable:
         return self._transformer
 
-    def _fit(self): ...
+    def _fit(self, data):
+        self._transformer = self._transformer.fit(data)
 
-    def _transform(self): ...
+    def _transform(self, data):
+        return self._transformer.transform(data)
+
+    def _inverse_transform(self, data):
+        return self._transformer.inverse_transform(data)
 
     def save_parameter(self) -> None:
 
