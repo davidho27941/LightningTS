@@ -35,9 +35,9 @@ class StructureDataset(BaseDataset):
         self.stage = stage
         self.kwargs = kwargs
 
-        self.sequence_length = self.time_series_config["input_length"]
+        self.input_length = self.time_series_config["input_length"]
         self.label_length = self.time_series_config["label_length"]
-        self.predict_length = self.time_series_config["output_length"]
+        self.output_length = self.time_series_config["output_length"]
 
         self.__prepare__()
 
