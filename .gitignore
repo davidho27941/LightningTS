@@ -7,3 +7,4 @@ LightningTS/utils/__pycache__
 LightningTS.egg-info/
 build/
 dist/
+config/PatchTST.yaml
