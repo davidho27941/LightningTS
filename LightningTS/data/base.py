@@ -89,7 +89,11 @@ class BaseDataset(Dataset, ABC):
         model_name = self.config["common"]["model_name"]
         model_version = self.config["common"]["model_version"]
 
-        save_path = f"{log_dir}/{model_name}/{model_version}/transformer_param.pkl"
+        save_path = (
+            f"{log_dir}/{model_name}/{model_version}/transformer_param.pkl"
+            if self.preprocess_config["normalize_param"] is None
+            else self.preprocess_config["normalize_param"]
+        )
 
         dump(self._transformer, save_path)
 
