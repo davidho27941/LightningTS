@@ -12,6 +12,8 @@ from sklearn.preprocessing import (
     MinMaxScaler,
 )
 
+from sklearn.externals import joblib
+
 
 class BaseDataIO(ABC):
     def __init__(self, file_path) -> None:
@@ -54,3 +56,20 @@ class BaseDataset(Dataset, ABC):
     @abstractmethod
     def __len__(self) -> int:
         raise NotImplementedError()
+
+    @property
+    def transformer(self):
+        return self._transformer
+
+    def save_parameter(self) -> None:
+
+        log_dir = self.config["common"]["log_dir"]
+        model_name = self.config["common"]["model_name"]
+        model_version = self.config["common"]["model_version"]
+
+        save_path = f"{log_dir}/{model_name}/{model_version}/transformer_param.pkl"
+
+        joblib.dump(self._transformer, save_path)
+
+    def load_parameter(self, filename) -> None:
+        joblib.load(filename)
