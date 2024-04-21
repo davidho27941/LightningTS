@@ -53,6 +53,12 @@ class BaseDataset(Dataset, ABC):
             else False
         )
 
+        self.preprocess_method = (
+            None
+            if self.preprocess_config["normalize_method"] == "None"
+            else self.preprocess_config["normalize_method"]
+        )
+
     def config_transformer(self):
         preprocessing_method = self.preprocess_config["normalize_method"]
         match preprocessing_method:
