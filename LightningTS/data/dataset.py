@@ -78,9 +78,6 @@ class StructureDataset(BaseDataset):
 
         self.__apply_transform__(data)
 
-        posix_ts = timestamp["timestamp"].map(lambda ts: ts.timestamp()).to_list()
+        self.__apply_time_encoding__(timestamp)
 
-        if self.time_encoding:
-            ...
-        else:
-            ...
+        posix_ts = timestamp["timestamp"].map(lambda ts: ts.timestamp()).to_list()
