@@ -49,7 +49,7 @@ class StructureDataset(BaseDataset):
 
     def __prepare__transformer__(self) -> None:
 
-        param_path = self.preprocess_config["normalize_param"]
+        param_path = os.path.join(*self.preprocess_config["normalize_param"])
 
         if os.path.isfile(param_path):
             self.is_transform_fitted = True
