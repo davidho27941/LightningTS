@@ -32,9 +32,7 @@ class BaseDataset(Dataset, ABC):
         self.config = config
 
     def config_transformer(self):
-        preprocessing_method = self.config["data"]["preprocessing"][
-            "standardlize_method"
-        ]
+        preprocessing_method = self.config["data"]["preprocessing"]["normalize_method"]
         match preprocessing_method:
             case "MinMax":
                 self._transformer = MinMaxScaler()
