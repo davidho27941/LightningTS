@@ -12,7 +12,7 @@ from sklearn.preprocessing import (
     MinMaxScaler,
 )
 
-from sklearn.externals import joblib
+from joblib import dump, load
 
 
 class BaseDataIO(ABC):
@@ -79,7 +79,7 @@ class BaseDataset(Dataset, ABC):
 
         save_path = f"{log_dir}/{model_name}/{model_version}/transformer_param.pkl"
 
-        joblib.dump(self._transformer, save_path)
+        dump(self._transformer, save_path)
 
     def load_parameter(self, filename) -> None:
-        self._transformer = joblib.load(filename)
+        self._transformer = load(filename)
