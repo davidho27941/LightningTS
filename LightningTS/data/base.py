@@ -59,6 +59,12 @@ class BaseDataset(Dataset, ABC):
             else self.preprocess_config["normalize_method"]
         )
 
+        self.param_path = (
+            None
+            if self.preprocess_config["normalize_param"] == "None"
+            else os.path.join(*self.preprocess_config["normalize_param"])
+        )
+
     def config_transformer(self):
         preprocessing_method = self.preprocess_config["normalize_method"]
         match preprocessing_method:
