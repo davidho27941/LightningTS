@@ -1,4 +1,4 @@
-from typing import Any
+from typing import Any, Callable
 
 from torch.utils.data import Dataset
 
@@ -58,8 +58,12 @@ class BaseDataset(Dataset, ABC):
         raise NotImplementedError()
 
     @property
-    def transformer(self):
+    def transformer(self) -> Callable:
         return self._transformer
+
+    def _fit(self): ...
+
+    def _transform(self): ...
 
     def save_parameter(self) -> None:
 
@@ -72,4 +76,4 @@ class BaseDataset(Dataset, ABC):
         joblib.dump(self._transformer, save_path)
 
     def load_parameter(self, filename) -> None:
-        joblib.load(filename)
+        self._transformer = joblib.load(filename)
