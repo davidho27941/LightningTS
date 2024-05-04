@@ -220,7 +220,12 @@ class PatchTSTModel(nn.Module):
 class PatchTST(pl.LightningModule):
     def __init__(self, config) -> None:
         super().__init__()
-        self.model_config = config["model"]
+
+        self.features = config["data"]["features"]
+        self.targets = config["data"]["targets"]
+
+        self.input_length = config["data"]["series_config"]["input_length"]
+        self.predict_length = config["data"]["series_config"]["output_length"]
 
         self.hparam = config["model"]["hparam"]
 
@@ -271,17 +276,61 @@ class PatchTST(pl.LightningModule):
         return self.model(x)
 
     def adjust_result_size(self, truth, pred):
-        f_dim = 0 if len(self.hparams.target) > 1 else -1
+        f_dim = 0 if len(self.targets) > 1 else -1
 
-        pred = pred[:, -self.hparams.predict_length :, f_dim:]
-        truth = truth[:, -self.hparams.predict_length :, f_dim:].to(truth.device)
+        pred = pred[:, -self.predict_length :, f_dim:]
+        truth = truth[:, -self.predict_length :, f_dim:].to(truth.device)
 
         return truth, pred
 
-    def training_step(self, batch, batch_idx): ...
+    def training_step(self, batch, batch_idx):
+        seq_x, seq_y, _, _, _ = batch
 
-    def validation_step(self, batch, batch_idx): ...
+        outputs = self(seq_x)
 
-    def test_step(self, batch, batch_idx): ...
+        truth, pred = self.adjust_result_size(seq_y, outputs)
 
-    def predict_step(self, batch, batch_idx): ...
+        loss = self.criterion(pred, truth)
+
+        self.log("train_loss", loss, on_epoch=True, on_step=True, prog_bar=True)
+
+        return loss
+
+    def validation_step(self, batch, batch_idx):
+        seq_x, seq_y, _, _, _ = batch
+
+        outputs = self(seq_x)
+
+        truth, pred = self.adjust_result_size(seq_y, outputs)
+
+        loss = (
+            self.criterion(pred, truth)
+            if self.val_criterion is None
+            else self.val_criterion(pred, truth)
+        )
+
+        self.log("val_loss", loss, on_epoch=True, on_step=True, prog_bar=True)
+
+        return loss
+
+    def test_step(self, batch, batch_idx):
+        seq_x, seq_y, _, _, _ = batch
+
+        outputs = self(seq_x)
+
+        truth, pred = self.adjust_result_size(seq_y, outputs)
+
+        loss = self.criterion(pred, truth)
+
+        self.log("test_loss", loss, on_epoch=True, on_step=True, prog_bar=True)
+
+    def predict_step(self, batch, batch_idx):
+        seq_x, seq_y, _, _, ts = batch
+
+        origin_seq_x = seq_x.clone()[:, :, -1:]
+
+        outputs = self(seq_x)
+
+        truth, pred = self.adjust_result_size(seq_y, outputs)
+
+        return pred, truth, origin_seq_x, ts
