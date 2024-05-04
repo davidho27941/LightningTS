@@ -36,21 +36,21 @@ class DataModule(LightningDataModule):
         self.train_dataloader_kargs = {
             "shuffle": self.shuffle,
             "num_workers": self.num_workers,
-            "drop_last": False,
+            "drop_last": True,
         }
 
         self.val_dataloader_kargs = {
             "shuffle": False,
             "batch_size": 1,
             "num_workers": self.num_workers,
-            "drop_last": True,
+            "drop_last": False,
         }
 
         self.test_dataloader_kargs = {
             "shuffle": False,
             "batch_size": 1,
             "num_workers": self.num_workers,
-            "drop_last": True,
+            "drop_last": False,
         }
 
     def load_data(self):
@@ -83,6 +83,8 @@ class DataModule(LightningDataModule):
                     need_label=self.data_config["need_label"],
                 )
 
+                self._transformer = self.train_dataset.transformer
+
                 self.val_dataset = StructureDataset(
                     dataset,
                     self.config,
@@ -91,12 +93,39 @@ class DataModule(LightningDataModule):
                 )
 
             case "validate":
-                ...
+                self.val_dataset = StructureDataset(
+                    dataset,
+                    self.config,
+                    stage,
+                    need_label=self.data_config["need_label"],
+                )
+
+                self._transformer = self.val_dataset.transformer
+
             case "test":
-                ...
+                self.test_dataset = StructureDataset(
+                    dataset,
+                    self.config,
+                    stage,
+                    need_label=self.data_config["need_label"],
+                )
+
+                self._transformer = self.test_dataset.transformer
+
             case "predict":
-                ...
-                
+                _stage = (
+                    "predict" if "predict" in self.data_config["date_range"] else "test"
+                )
+
+                self.test_dataset = StructureDataset(
+                    dataset,
+                    self.config,
+                    _stage,
+                    need_label=self.data_config["need_label"],
+                )
+
+                self._transformer = self.test_dataset.transformer
+
     def train_dataloader(self):
         """Return train dataloder."""
 
