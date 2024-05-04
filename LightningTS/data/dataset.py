@@ -23,6 +23,7 @@ class StructureDataset(BaseDataset):
         raw_data: pd.DataFrame,
         config: Dict[str, Any],
         stage: str,
+        need_label: bool=False,
         **kwargs: Dict[str, Any],
     ) -> None:
 
@@ -34,6 +35,7 @@ class StructureDataset(BaseDataset):
         self.data = raw_data
         self.config = config
         self.stage = stage
+        self.need_label = need_label
         self.kwargs = kwargs
 
         self.input_length = self.time_series_config["input_length"]
