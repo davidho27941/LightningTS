@@ -64,6 +64,3 @@ class ParquetDataIO(BaseDataIO):
     @property
     def data(self):
         return self.data
-
-
-
