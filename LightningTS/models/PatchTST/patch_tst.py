@@ -198,9 +198,10 @@ class PatchTSTModel(nn.Module):
 
 
 class PatchTST(pl.LightningModule):
-    def __init__(self, config, is_fit=True) -> None:
+    def __init__(self, config=None, is_fit=True, **kwargs) -> None:
         super().__init__()
-        print(self.trainer.state)
+
+        self.config = config
 
         self.features = config["data"]["features"]
         self.targets = config["data"]["targets"]
@@ -211,9 +212,6 @@ class PatchTST(pl.LightningModule):
         self.hparam = config["model"]["hparam"]
 
         model_struct = config["model"]["structure"]
-        
-        if is_fit:
-            self.configure_criterion()
 
         pre_config_hparam = dict(
             individual=0,  # boolean
@@ -242,9 +240,15 @@ class PatchTST(pl.LightningModule):
 
         pre_config_hparam = pre_config_hparam | config["model"]["extra"]
 
-        model_config = model_struct | pre_config_hparam
+        self.model_config = model_struct | pre_config_hparam
 
-        self.model = PatchTSTModel(model_config)
+        self.model = PatchTSTModel(self.model_config)
+
+        self.configure_criterion()
+
+        if is_fit:
+            self.steps_per_epoch = kwargs["steps_per_epoch"]
+            self.configure_optimizers()
 
     def configure_criterion(self) -> None:
 
@@ -253,6 +257,18 @@ class PatchTST(pl.LightningModule):
                 self.criterion = nn.L1Loss()
             case "MSELoss":
                 self.criterion = nn.MSELoss()
+
+    def configure_optimizers(self):
+        optimizer = torch.optim.Adam(self.model.parameters(), lr=self.hparams.lr)
+        scheduler = optim.lr_scheduler.OneCycleLR(
+            optimizer=optimizer,
+            steps_per_epoch=self.step_per_epoch,
+            pct_start=self.config["pct_start"],
+            epochs=self.hparams.train_epochs,
+            max_lr=self.hparams.lr,
+        )
+
+        return [optimizer], [{"scheduler": scheduler, "interval": "step"}]
 
     def forward(self, x):
         return self.model(x)
