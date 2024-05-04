@@ -59,7 +59,7 @@ class StructureDataset(BaseDataset):
             self.config_transformer()
 
     def __apply_transform__(self, data: pd.DataFrame) -> np.ndarray:
-        if self.preprocess_config["normalize_method"] is not None:
+        if self.preprocess_method is not None:
             self.__prepare__transformer__()
 
             if self.is_transform_fitted:
