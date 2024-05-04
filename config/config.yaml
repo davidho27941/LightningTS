@@ -40,9 +40,9 @@ data:
     - target1
   total_size: &total_size <n_feature+n_target>
   series_config:
-    input_length: 128
+    input_length: &input_len 128
     label_length: 96
-    output_length: 24
+    output_length: &pred_len 24
   preprocessing:
     freq: 't'
     shuffle: True
@@ -81,6 +81,8 @@ model:
       head_dropout: 0
       itr: 1
       train_epochs: *epochs
+      sequence_length: *input_len
+      predict_length: *pred_len
     encoder:
       n_layers: 3
       input_size: *total_size
