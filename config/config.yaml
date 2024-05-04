@@ -11,10 +11,10 @@ loggers: &loggers
     version: *model_version
   CSVLogger:
     <<: *common_logger_config
-    save_dir: &csv_logger_dir [*log_dir, "csv_log"]
+    save_dir: &csv_logger_dir [*logdir, "csv_log"]
   TensorBoardLogger:
     <<: *common_logger_config
-    save_dir: &tb_logger_dir [*log_dir, "tensorboard"]
+    save_dir: &tb_logger_dir [*logdir, "tensorboard"]
     log_graph: True
 
 data:
