@@ -20,29 +20,10 @@ class PatchTSTModel(nn.Module):
     def __init__(
         self,
         configs,
-        # max_seq_len: Optional[int] = 1024,
-        # d_k: Optional[int] = None,
-        # d_v: Optional[int] = None,
-        # norm: str = "BatchNorm",
-        # attn_dropout: float = 0.0,
-        # act: str = "gelu",
-        # key_padding_mask: bool = "auto",
-        # padding_var: Optional[int] = None,
-        # attn_mask: Optional[Tensor] = None,
-        # res_attention: bool = True,
-        # pre_norm: bool = False,
-        # store_attn: bool = False,
-        # pe: str = "zeros",
-        # learn_pe: bool = True,
-        # pretrain_head: bool = False,
-        # head_type="flatten",
-        # verbose: bool = False,
-        # **kwargs,
     ):
 
         super().__init__()
 
-        # load parameters
         c_in = configs["encoder"]["input_size"]
         context_window = configs["common"]["sequence_length"]
         target_window = configs["common"]["predict_length"]
@@ -124,7 +105,6 @@ class PatchTSTModel(nn.Module):
                 affine=affine,
                 subtract_last=subtract_last,
                 verbose=verbose,
-                # **kwargs,
             )
             self.model_res = PatchTST_backbone(
                 c_in=c_in,
