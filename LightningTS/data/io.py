@@ -1,12 +1,9 @@
 import os
-import yaml
 import pandas as pd
 
 from glob import glob
 
 from .base import BaseDataIO
-
-from typing import Any
 
 
 class CSVDataIO(BaseDataIO):
