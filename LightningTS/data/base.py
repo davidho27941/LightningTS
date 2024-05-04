@@ -43,7 +43,7 @@ class BaseDataset(Dataset, ABC):
         self.features = self.data_config["features"]
         self.targets = self.data_config["targets"]
 
-        self.column_name = [*self.features, *self.targets]
+        self.column_names = [*self.features, *self.targets]
 
         self.time_encoding = self.preprocess_config["time_encoding"]
 
