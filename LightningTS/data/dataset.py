@@ -23,7 +23,7 @@ class StructureDataset(BaseDataset):
         raw_data: pd.DataFrame,
         config: Dict[str, Any],
         stage: str,
-        need_label: bool=False,
+        need_label: bool = False,
         **kwargs: Dict[str, Any],
     ) -> None:
 
@@ -32,10 +32,11 @@ class StructureDataset(BaseDataset):
             config,
         )
 
-        self.data = raw_data
+        self.raw_data = raw_data
         self.config = config
         self.stage = stage
         self.need_label = need_label
+        self.selector = self.data_config["date_range"]["selector"]
         self.kwargs = kwargs
 
         self.input_length = self.time_series_config["input_length"]
@@ -44,10 +45,40 @@ class StructureDataset(BaseDataset):
 
         self.__prepare__()
 
+    def split_by_date(self, start, end):
+        data = (
+            self.raw_data[
+                (self.raw_data["timestamp"] >= start)
+                & (self.raw_data["timestamp"] < end)
+            ]
+        ).copy()
+
+        timestamp = self.raw_data[["timestamp"]]
+
+        data = data[[self.column_names]]
+
+        return data, timestamp
+
+    def split_by_index(self, start, end):
+        data = self.raw_data[start:end]
+        timestamp = self.raw_data[["timestamp"]][start:end]
+        return data, timestamp
+
     def __prepare__data__(self, stage):
-        raise NotImplementedError(
-            "A child class must implement this method to load the data w.r.t to different stage."
-        )
+        start = self.data_config["date_range"][stage]["start"]
+        end = self.data_config["date_range"][stage]["end"]
+
+        match self.selector:
+            case "date":
+                return self.split_by_date(start, end)
+
+            case "index":
+                return self.split_by_index(start, end)
+
+            case _:
+                raise ValueError(
+                    f"Provided range selector {self.selector} is not supported."
+                )
 
     def __prepare__transformer__(self) -> None:
 
@@ -74,7 +105,7 @@ class StructureDataset(BaseDataset):
                 data_processed = data_transformed[self.column_name].values
 
         else:
-            data_processed = self.data.values
+            data_processed = data.values
 
         return data_processed
 
@@ -102,7 +133,7 @@ class StructureDataset(BaseDataset):
         return timestamp_encoded
 
     def __prepare__(self):
-        data, timestamp = self.get_data(self.stage)
+        data, timestamp = self.__prepare__data__(self.stage)
 
         data_processed = self.__apply_transform__(data)
 
