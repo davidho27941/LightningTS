@@ -41,12 +41,10 @@ def config_tensorboard_logger(config, stage):
 def config_loggers(config, stage="fit"):
     loggerList = []
 
-    if "CSVLogger" in config["loggers"]:
-        loggerList.append(config_csv_logger(config["loggers"]["CSVLogger"], stage))
+    if "CSVLogger" in config:
+        loggerList.append(config_csv_logger(config["CSVLogger"], stage))
 
-    if "TensorBoardLogger" in config["loggers"]:
-        loggerList.append(
-            config_tensorboard_logger(config["loggers"]["TensorBoardLogger"], stage)
-        )
+    if "TensorBoardLogger" in config:
+        loggerList.append(config_tensorboard_logger(config["TensorBoardLogger"], stage))
 
     return loggerList
