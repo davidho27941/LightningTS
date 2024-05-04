@@ -198,8 +198,9 @@ class PatchTSTModel(nn.Module):
 
 
 class PatchTST(pl.LightningModule):
-    def __init__(self, config) -> None:
+    def __init__(self, config, is_fit=True) -> None:
         super().__init__()
+        print(self.trainer.state)
 
         self.features = config["data"]["features"]
         self.targets = config["data"]["targets"]
@@ -210,8 +211,9 @@ class PatchTST(pl.LightningModule):
         self.hparam = config["model"]["hparam"]
 
         model_struct = config["model"]["structure"]
-
-        self.configure_criterion()
+        
+        if is_fit:
+            self.configure_criterion()
 
         pre_config_hparam = dict(
             individual=0,  # boolean
